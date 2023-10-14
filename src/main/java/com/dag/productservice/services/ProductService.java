@@ -1,7 +1,10 @@
 package com.dag.productservice.services;
 
+import com.dag.productservice.dto.schema.RequestDto;
 import com.dag.productservice.dto.schema.ResponseDto;
 
 public interface ProductService {
-    abstract ResponseDto getProductById(Long id);
+    ResponseDto getProductById(Long id);
+
+    ResponseDto createProduct(RequestDto requestDto);
 }

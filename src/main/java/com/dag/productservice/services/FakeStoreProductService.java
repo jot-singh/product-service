@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import com.dag.productservice.dto.schema.RequestDto;
 import com.dag.productservice.dto.schema.ResponseDto;
 
 @Service
@@ -32,9 +33,23 @@ public class FakeStoreProductService implements ProductService {
         return responseDto;
     }
 
+    @Override
+    public ResponseDto createProduct(RequestDto requestDto) {
+        RestTemplate restTemplate = this.restTemplateBuilder.build();
+        ResponseEntity<ResponseDto> response = restTemplate
+                                .postForEntity(postUri(), requestDto, ResponseDto.class);
+        return response.getBody();
+    }
+
     private String getUriForId() {
         return String.join("/", fakeStoreUrl,"{id}");
     }
+    
+    private String postUri() {
+        return fakeStoreUrl;
+    }
+    
+
 
     /* Function to copy the response into ResponseDto */
     /* private void copyObject(FakeStoreResponseDto fakeStoreResponseDto, ResponseDto responseDto) {
