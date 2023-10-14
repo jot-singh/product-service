@@ -1,0 +1,9 @@
+{
+  "properties": [
+    {
+      "name": "fakestore.api.url",
+      "type": "java.lang.String",
+      "description": "Downstream Fake Store API URL to connect to get data for Product Service"
+    }
+  ]
+}

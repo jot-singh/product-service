@@ -1,6 +1,7 @@
 package com.dag.productservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,28 +23,34 @@ public class ProductController {
     @Autowired
     private ProductService productService;
 
-    ProductController(ProductService productService)
-    {
+    ProductController(ProductService productService) {
         this.productService = productService;
     }
 
     @GetMapping
-    public void getAllProducts(){}
+    public ResponseEntity<ResponseDto[]> getAllProducts() {
+        return productService.getAllProducts();
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResponseDto> getProductById(@PathVariable("id") Long id){
+    public ResponseEntity<ResponseDto> getProductById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
-    @DeleteMapping("{id}")
-    public void deleteproductById(@PathVariable("id") Integer Id){}
-    
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ResponseDto> deleteproductById(@PathVariable("id") Integer id) {
+        ResponseEntity<ResponseDto> responseEntity = ResponseEntity.ok(
+                productService.deleteproductById(id));
+        return responseEntity;
+    }
+
     @PostMapping
-    public ResponseEntity<ResponseDto> createProduct(@RequestBody RequestDto requestDto){
-       return ResponseEntity.ok(productService.createProduct(requestDto));
+    public ResponseEntity<ResponseDto> createProduct(@RequestBody RequestDto requestDto) {
+        return ResponseEntity.ok(productService.createProduct(requestDto));
     }
 
     @PutMapping("{id}")
-    public void updateProductById(){}
+    public void updateProductById() {
+    }
 
 }
