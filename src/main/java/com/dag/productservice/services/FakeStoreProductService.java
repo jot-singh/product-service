@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import com.dag.productservice.dto.schema.RequestDto;
 import com.dag.productservice.dto.schema.ResponseDto;
+import com.dag.productservice.exceptionhandlers.exceptions.NotFoundException;
 
 @Service
 public class FakeStoreProductService implements ProductService {
@@ -36,7 +37,7 @@ public class FakeStoreProductService implements ProductService {
         // in the response json.
         ResponseEntity<ResponseDto> fakeStoreResponseEntity = restTemplate
                 .getForEntity(getUri, ResponseDto.class, id);
-    
+
         return fakeStoreResponseEntity.getBody();
     }
 
@@ -65,8 +66,13 @@ public class FakeStoreProductService implements ProductService {
 
         Optional<ResponseEntity<ResponseDto>> responseEntity = Optional.of(this.restTemplate.execute(deleteUri(),
                 HttpMethod.DELETE, requestCallback, responseExtractor, id));
+        if(responseEntity.isPresent() && responseEntity.get().getBody() == null)
+            throwNotFoundException();
+        return responseEntity.orElseThrow(() -> new NotFoundException("ProductId not found")).getBody();
+    }
 
-        return responseEntity.orElseThrow().getBody();
+    private void throwNotFoundException() {
+        throw new NotFoundException("productId Not Found");
     }
 
     @Override
@@ -74,7 +80,10 @@ public class FakeStoreProductService implements ProductService {
         RequestCallback requestCallback = this.restTemplate.httpEntityCallback(requestDto, ResponseDto.class);
         ResponseExtractor<ResponseEntity<ResponseDto>> responseExtractor = this.restTemplate
                 .responseEntityExtractor(ResponseDto.class);
-        ResponseEntity<ResponseDto> responseEntity = this.restTemplate.execute(updateUri(), HttpMethod.PUT, requestCallback, responseExtractor, id);
+        ResponseEntity<ResponseDto> responseEntity = this.restTemplate.execute(updateUri(), HttpMethod.PUT,
+                requestCallback, responseExtractor, id);
+        if (responseEntity.getBody() == null)
+            throwNotFoundException();
         return responseEntity.getBody();
     }
 
@@ -95,8 +104,8 @@ public class FakeStoreProductService implements ProductService {
         return byId();
     }
 
-    private String updateUri(){
-        return  byId();
+    private String updateUri() {
+        return byId();
     }
 
     private String byId() {
