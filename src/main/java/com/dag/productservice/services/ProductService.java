@@ -10,7 +10,9 @@ public interface ProductService {
 
     ResponseDto createProduct(RequestDto requestDto);
 
-    ResponseEntity<ResponseDto[]> getAllProducts();
+    ResponseDto[] getAllProducts();
 
     ResponseDto deleteproductById(Integer id);
+
+    ResponseDto updateProductById(Long id, RequestDto requestDto);
 }

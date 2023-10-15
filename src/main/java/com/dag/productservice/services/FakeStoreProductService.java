@@ -36,9 +36,8 @@ public class FakeStoreProductService implements ProductService {
         // in the response json.
         ResponseEntity<ResponseDto> fakeStoreResponseEntity = restTemplate
                 .getForEntity(getUri, ResponseDto.class, id);
-        ResponseDto responseDto = fakeStoreResponseEntity.getBody();
-
-        return responseDto;
+    
+        return fakeStoreResponseEntity.getBody();
     }
 
     @Override
@@ -49,9 +48,9 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public ResponseEntity<ResponseDto[]> getAllProducts() {
-        var allProducts = restTemplate.getForEntity(getUri(), ResponseDto[].class);
-        return allProducts;
+    public ResponseDto[] getAllProducts() {
+        ResponseEntity<ResponseDto[]> allProducts = restTemplate.getForEntity(getUri(), ResponseDto[].class);
+        return allProducts.getBody();
     }
 
     @Override
@@ -70,8 +69,18 @@ public class FakeStoreProductService implements ProductService {
         return responseEntity.orElseThrow().getBody();
     }
 
+    @Override
+    public ResponseDto updateProductById(Long id, RequestDto requestDto) {
+        RequestCallback requestCallback = this.restTemplate.httpEntityCallback(requestDto, ResponseDto.class);
+        ResponseExtractor<ResponseEntity<ResponseDto>> responseExtractor = this.restTemplate
+                .responseEntityExtractor(ResponseDto.class);
+        ResponseEntity<ResponseDto> responseEntity = this.restTemplate.execute(updateUri(), HttpMethod.PUT, requestCallback, responseExtractor, id);
+        return responseEntity.getBody();
+    }
+
+
     private String getUriForId() {
-        return String.join("/", getUri(), "{id}");
+        return byId();
     }
 
     private String postUri() {
@@ -83,6 +92,14 @@ public class FakeStoreProductService implements ProductService {
     }
 
     private String deleteUri() {
+        return byId();
+    }
+
+    private String updateUri(){
+        return  byId();
+    }
+
+    private String byId() {
         return String.join("/", fakeStoreUrl, "{id}");
     }
 
