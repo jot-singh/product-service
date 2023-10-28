@@ -1,16 +1,16 @@
 package com.dag.productservice.services;
 
-import com.dag.productservice.dto.schema.RequestDto;
-import com.dag.productservice.dto.schema.ResponseDto;
+import com.dag.productservice.dto.ProductRequestDto;
+import com.dag.productservice.dto.ProductResponseDto;
 
 public interface ProductService {
-    ResponseDto getProductById(Long id);
+    ProductResponseDto getProductById(Long id);
 
-    ResponseDto createProduct(RequestDto requestDto);
+    ProductResponseDto createProduct(ProductRequestDto requestDto);
 
-    ResponseDto[] getAllProducts();
+    ProductResponseDto[] getAllProducts();
 
-    ResponseDto deleteproductById(Integer id);
+    ProductResponseDto deleteproductById(Integer id);
 
-    ResponseDto updateProductById(Long id, RequestDto requestDto);
+    ProductResponseDto updateProductById(Long id, ProductRequestDto requestDto);
 }

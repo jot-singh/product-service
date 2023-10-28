@@ -1,4 +1,4 @@
-package com.dag.productservice.dto.schema;
+package com.dag.productservice.dto;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -7,7 +7,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class RequestDto {
+public class ProductRequestDto {
     String title;
     Double price;
     String category;

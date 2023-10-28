@@ -11,9 +11,9 @@ import com.dag.productservice.exceptionhandlers.exceptions.NotFoundException;
 public class GlobalExceptionHandler {
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ResponseErrorDto> handleNotFoundException(NotFoundException notFound){
-        return new ResponseEntity<ResponseErrorDto>(
-            new ResponseErrorDto(notFound.getErrorMessage(),HttpStatus.NOT_FOUND),
-            HttpStatus.NOT_FOUND);
-
+        return new ResponseEntity<>(
+                new ResponseErrorDto(notFound.getErrorMessage(), HttpStatus.NOT_FOUND),
+                HttpStatus.NOT_FOUND);
     }
+
 }

@@ -11,8 +11,8 @@ import org.springframework.web.client.RequestCallback;
 import org.springframework.web.client.ResponseExtractor;
 import org.springframework.web.client.RestTemplate;
 
-import com.dag.productservice.dto.schema.RequestDto;
-import com.dag.productservice.dto.schema.ResponseDto;
+import com.dag.productservice.dto.ProductRequestDto;
+import com.dag.productservice.dto.ProductResponseDto;
 import com.dag.productservice.exceptionhandlers.exceptions.NotFoundException;
 
 @Service
@@ -29,42 +29,42 @@ public class FakeStoreProductService implements ProductService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public ResponseDto getProductById(Long id) {
+    public ProductResponseDto getProductById(Long id) {
         String getUri = getUriForId();
 
         // ResponseDto pojo need not be exactly same as the response json. It can have
         // subset of total fields coming
         // in the response json.
-        ResponseEntity<ResponseDto> fakeStoreResponseEntity = restTemplate
-                .getForEntity(getUri, ResponseDto.class, id);
+        ResponseEntity<ProductResponseDto> fakeStoreResponseEntity = restTemplate
+                .getForEntity(getUri, ProductResponseDto.class, id);
 
         return fakeStoreResponseEntity.getBody();
     }
 
     @Override
-    public ResponseDto createProduct(RequestDto requestDto) {
-        ResponseEntity<ResponseDto> response = restTemplate
-                .postForEntity(postUri(), requestDto, ResponseDto.class);
+    public ProductResponseDto createProduct(ProductRequestDto requestDto) {
+        ResponseEntity<ProductResponseDto> response = restTemplate
+                .postForEntity(postUri(), requestDto, ProductResponseDto.class);
         return response.getBody();
     }
 
     @Override
-    public ResponseDto[] getAllProducts() {
-        ResponseEntity<ResponseDto[]> allProducts = restTemplate.getForEntity(getUri(), ResponseDto[].class);
+    public ProductResponseDto[] getAllProducts() {
+        ResponseEntity<ProductResponseDto[]> allProducts = restTemplate.getForEntity(getUri(), ProductResponseDto[].class);
         return allProducts.getBody();
     }
 
     @Override
-    public ResponseDto deleteproductById(Integer id) {
+    public ProductResponseDto deleteproductById(Integer id) {
         // if no response is needed.
         // this.restTemplate.delete(deleteUri(),id);
         // if we want to return the responseDto.
-        RequestCallback requestCallback = this.restTemplate.acceptHeaderRequestCallback(ResponseDto.class);
+        RequestCallback requestCallback = this.restTemplate.acceptHeaderRequestCallback(ProductResponseDto.class);
 
-        ResponseExtractor<ResponseEntity<ResponseDto>> responseExtractor = this.restTemplate
-                .responseEntityExtractor(ResponseDto.class);
+        ResponseExtractor<ResponseEntity<ProductResponseDto>> responseExtractor = this.restTemplate
+                .responseEntityExtractor(ProductResponseDto.class);
 
-        Optional<ResponseEntity<ResponseDto>> responseEntity = Optional.of(this.restTemplate.execute(deleteUri(),
+        Optional<ResponseEntity<ProductResponseDto>> responseEntity = Optional.of(this.restTemplate.execute(deleteUri(),
                 HttpMethod.DELETE, requestCallback, responseExtractor, id));
         if(responseEntity.isPresent() && responseEntity.get().getBody() == null)
             throwNotFoundException();
@@ -76,11 +76,11 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public ResponseDto updateProductById(Long id, RequestDto requestDto) {
-        RequestCallback requestCallback = this.restTemplate.httpEntityCallback(requestDto, ResponseDto.class);
-        ResponseExtractor<ResponseEntity<ResponseDto>> responseExtractor = this.restTemplate
-                .responseEntityExtractor(ResponseDto.class);
-        ResponseEntity<ResponseDto> responseEntity = this.restTemplate.execute(updateUri(), HttpMethod.PUT,
+    public ProductResponseDto updateProductById(Long id, ProductRequestDto requestDto) {
+        RequestCallback requestCallback = this.restTemplate.httpEntityCallback(requestDto, ProductResponseDto.class);
+        ResponseExtractor<ResponseEntity<ProductResponseDto>> responseExtractor = this.restTemplate
+                .responseEntityExtractor(ProductResponseDto.class);
+        ResponseEntity<ProductResponseDto> responseEntity = this.restTemplate.execute(updateUri(), HttpMethod.PUT,
                 requestCallback, responseExtractor, id);
         if (responseEntity.getBody() == null)
             throwNotFoundException();
@@ -111,16 +111,4 @@ public class FakeStoreProductService implements ProductService {
     private String byId() {
         return String.join("/", fakeStoreUrl, "{id}");
     }
-
-    /* Function to copy the response into ResponseDto */
-    /*
-     * private void copyObject(FakeStoreResponseDto fakeStoreResponseDto,
-     * ResponseDto responseDto) {
-     * responseDto.setId(fakeStoreResponseDto.getId());
-     * responseDto.setCategory(fakeStoreResponseDto.getCategory());
-     * responseDto.setDescription(fakeStoreResponseDto.getDescription());
-     * responseDto.setPrice(fakeStoreResponseDto.getPrice());
-     * responseDto.setTitle(fakeStoreResponseDto.getTitle());
-     * }
-     */
 }
