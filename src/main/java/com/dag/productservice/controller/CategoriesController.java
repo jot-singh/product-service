@@ -2,18 +2,11 @@ package com.dag.productservice.controller;
 
 import com.dag.productservice.dto.CategoryResponseDto;
 import com.dag.productservice.dto.CategoryRequestDto;
-import com.dag.productservice.services.CategoryService;
+import com.dag.productservice.services.category.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-//    Write the CategoriesController class using CategoryService class with supported methods. The controller class should support GET, POST, PUT mapping
-//    GET - /categories
-//    GET - /categories/{id}
-//    POST - /categories
-//    PUT - /categories/{id}
-//    GET - /categories - should return all categories for specified category ids
-//    GET - /categories/{id} - should return category for specified category id
 @RestController
 @RequestMapping("/categories")
 public class CategoriesController {
