@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dag.productservice.dto.ProductRequestDto;
 import com.dag.productservice.dto.ProductResponseDto;
-import com.dag.productservice.services.ProductService;
+import com.dag.productservice.services.product.ProductService;
 
 @RestController
 @RequestMapping("/products")
@@ -33,12 +33,12 @@ public class ProductController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable("id") Long id) {
+    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable("id") String id) {
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> deleteproductById(@PathVariable("id") Integer id) {
+    public ResponseEntity<ProductResponseDto> deleteproductById(@PathVariable("id") String id) {
         ResponseEntity<ProductResponseDto> responseEntity = ResponseEntity.ok(
                 productService.deleteproductById(id));
         return responseEntity;
@@ -50,7 +50,7 @@ public class ProductController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<ProductResponseDto> updateProductById(@PathVariable("id") Long id,
+    public ResponseEntity<ProductResponseDto> updateProductById(@PathVariable("id") String id,
                                                                 @RequestBody ProductRequestDto requestDto) {
         return new ResponseEntity<ProductResponseDto>(productService.updateProductById(id, requestDto), HttpStatus.OK);
     }
