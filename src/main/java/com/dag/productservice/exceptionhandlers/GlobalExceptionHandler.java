@@ -16,4 +16,25 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ResponseErrorDto> handleIllegalArgumentException(IllegalArgumentException illegalArgument){
+        return new ResponseEntity<>(
+                new ResponseErrorDto(illegalArgument.getMessage(), HttpStatus.BAD_REQUEST),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    public ResponseEntity<ResponseErrorDto> handleNullPointerException(NullPointerException nullPointer){
+        return new ResponseEntity<>(
+                new ResponseErrorDto(nullPointer.getMessage(), HttpStatus.BAD_REQUEST),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseErrorDto> handleException(Exception exception){
+        return new ResponseEntity<>(
+                new ResponseErrorDto(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 }
