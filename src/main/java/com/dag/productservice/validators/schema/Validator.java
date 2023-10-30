@@ -1,5 +1,5 @@
 package com.dag.productservice.validators.schema;
 
-public interface Validator<T extends Object> {
+public interface Validator<T> {
     boolean isValid(T value);
 }

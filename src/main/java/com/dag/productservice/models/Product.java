@@ -14,7 +14,6 @@ public class Product extends V0 {
     @NonNull
     String name;
     @Column
-    @NonNull
     private String title;
     @Column
     private String description;

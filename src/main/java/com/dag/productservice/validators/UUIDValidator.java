@@ -1,9 +1,9 @@
 package com.dag.productservice.validators;
 
 import com.dag.productservice.validators.schema.Validator;
-import lombok.*;
-
-import java.util.UUID;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data

@@ -7,7 +7,6 @@ import com.dag.productservice.dto.ProductResponseDto;
 import com.dag.productservice.exceptionhandlers.exceptions.NotFoundException;
 import com.dag.productservice.models.Category;
 import com.dag.productservice.models.Product;
-import com.dag.productservice.services.category.CategoryService;
 import com.dag.productservice.validators.Validators;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;

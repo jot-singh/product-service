@@ -24,7 +24,7 @@ public class CategoriesController {
     @PutMapping("/{id}")
     public ResponseEntity<CategoryResponseDto> updateCategoryById(@PathVariable("id") String id,
             @RequestBody CategoryRequestDto CategoryRequestDto) {
-        return new ResponseEntity<CategoryResponseDto>(categoryService.updateCategoryById(id, CategoryRequestDto), HttpStatus.OK);
+        return new ResponseEntity<>(categoryService.updateCategoryById(id, CategoryRequestDto), HttpStatus.OK);
     }
     
     @GetMapping
