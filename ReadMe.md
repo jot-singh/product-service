@@ -47,7 +47,7 @@ Follow these steps to set up and run the E-commerce sample backend project:
 1. **Clone the Repository**: Begin by cloning this repository to your local machine using Git:
 
    ```bash
-   git clone https://github.com/your-username/e-commerce-backend.git
+   git clone https://github.com/jot-singh/product-service.git
    ```
 
 ## Project Setup
