@@ -1,4 +1,4 @@
-package com.dag.productservice.services;
+package com.dag.productservice.services.category;
 
 import com.dag.productservice.dto.CategoryResponseDto;
 import com.dag.productservice.dto.CategoryRequestDto;

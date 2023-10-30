@@ -1,5 +1,6 @@
-package com.dag.productservice.services;
+package com.dag.productservice.services.product;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -22,14 +23,14 @@ public class FakeStoreProductService implements ProductService {
     @Value("${fakestore.api.url}")
     String fakeStoreUrl;
 
-    private RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
     FakeStoreProductService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplateBuilder = restTemplateBuilder;
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public ProductResponseDto getProductById(Long id) {
+    public ProductResponseDto getProductById(String id) {
         String getUri = getUriForId();
 
         // ResponseDto pojo need not be exactly same as the response json. It can have
@@ -55,7 +56,7 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public ProductResponseDto deleteproductById(Integer id) {
+    public ProductResponseDto deleteproductById(String id) {
         // if no response is needed.
         // this.restTemplate.delete(deleteUri(),id);
         // if we want to return the responseDto.
@@ -64,9 +65,9 @@ public class FakeStoreProductService implements ProductService {
         ResponseExtractor<ResponseEntity<ProductResponseDto>> responseExtractor = this.restTemplate
                 .responseEntityExtractor(ProductResponseDto.class);
 
-        Optional<ResponseEntity<ProductResponseDto>> responseEntity = Optional.of(this.restTemplate.execute(deleteUri(),
-                HttpMethod.DELETE, requestCallback, responseExtractor, id));
-        if(responseEntity.isPresent() && responseEntity.get().getBody() == null)
+        Optional<ResponseEntity<ProductResponseDto>> responseEntity = Optional.of(Objects.requireNonNull(this.restTemplate.execute(deleteUri(),
+                HttpMethod.DELETE, requestCallback, responseExtractor, id)));
+        if(responseEntity.get().getBody() == null)
             throwNotFoundException();
         return responseEntity.orElseThrow(() -> new NotFoundException("ProductId not found")).getBody();
     }
@@ -76,13 +77,13 @@ public class FakeStoreProductService implements ProductService {
     }
 
     @Override
-    public ProductResponseDto updateProductById(Long id, ProductRequestDto requestDto) {
+    public ProductResponseDto updateProductById(String id, ProductRequestDto requestDto) {
         RequestCallback requestCallback = this.restTemplate.httpEntityCallback(requestDto, ProductResponseDto.class);
         ResponseExtractor<ResponseEntity<ProductResponseDto>> responseExtractor = this.restTemplate
                 .responseEntityExtractor(ProductResponseDto.class);
         ResponseEntity<ProductResponseDto> responseEntity = this.restTemplate.execute(updateUri(), HttpMethod.PUT,
                 requestCallback, responseExtractor, id);
-        if (responseEntity.getBody() == null)
+        if (Objects.requireNonNull(responseEntity).getBody() == null)
             throwNotFoundException();
         return responseEntity.getBody();
     }

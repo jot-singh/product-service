@@ -1,4 +1,4 @@
-package com.dag.productservice.services;
+package com.dag.productservice.services.category;
 
 import com.dag.productservice.dao.schema.CategoryRepository;
 import com.dag.productservice.dto.CategoryRequestDto;
@@ -76,7 +76,6 @@ public class LocalCategoriesService implements CategoryService {
         category.setProducts(new ArrayList<>());
         categoryRepository.save(category);
         return serialistToCategoryDto(category);
-
     }
 
     /**
@@ -121,14 +120,7 @@ public class LocalCategoriesService implements CategoryService {
     private ProductResponseDto[] serialiseToProductsDto(List<Product> products) {
         if (products == null)
             return null;
-        return products.stream().map(product -> {
-            ProductResponseDto productResponseDto = new ProductResponseDto();
-            productResponseDto.setId(product.getId().toString());
-            productResponseDto.setName(product.getName());
-            productResponseDto.setPrice(product.getPrice());
-            productResponseDto.setCategory(product.getCategory().getName());
-            return productResponseDto;
-        }).toArray(ProductResponseDto[]::new);
+        return products.stream().map(ProductResponseDto::new).toArray(ProductResponseDto[]::new);
     }
 
     private CategoryResponseDto serialistToCategoryDto(Category category) {
