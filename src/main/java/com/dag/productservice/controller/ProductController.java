@@ -53,5 +53,4 @@ public class ProductController {
                                                                 @RequestBody ProductRequestDto requestDto) {
         return new ResponseEntity<>(productService.updateProductById(id, requestDto), HttpStatus.OK);
     }
-
 }
