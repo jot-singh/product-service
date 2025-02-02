@@ -1,4 +1,4 @@
-package com.dag.productservice.dao;
+package com.dag.productservice.dao.schema;
 
 import com.dag.productservice.models.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
