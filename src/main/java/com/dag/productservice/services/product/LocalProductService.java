@@ -1,7 +1,7 @@
 package com.dag.productservice.services.product;
 
-import com.dag.productservice.dao.LocalProductRepository;
 import com.dag.productservice.dao.schema.CategoryRepository;
+import com.dag.productservice.dao.schema.LocalProductRepository;
 import com.dag.productservice.dto.ProductRequestDto;
 import com.dag.productservice.dto.ProductResponseDto;
 import com.dag.productservice.exceptionhandlers.exceptions.NotFoundException;
@@ -11,6 +11,7 @@ import com.dag.productservice.validators.Validators;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -61,13 +62,13 @@ public class LocalProductService implements ProductService {
     }
 
     @Override
-    public ProductResponseDto[] getAllProducts() {
+    public List<ProductResponseDto> getAllProducts() {
         return this.localProductRepository.findAll().stream()
-                .map(ProductResponseDto::new).toArray(ProductResponseDto[]::new);
+                .map(ProductResponseDto::new).toList();
     }
 
     @Override
-    public ProductResponseDto deleteproductById(String id) {
+    public ProductResponseDto deleteProductById(String id) {
         if (!Validators.UUID_VALIDATOR.get().isValid(id))
             throw new IllegalArgumentException("Invalid input");
         UUID uuid = UUID.fromString(id);

@@ -3,14 +3,16 @@ package com.dag.productservice.services.product;
 import com.dag.productservice.dto.ProductRequestDto;
 import com.dag.productservice.dto.ProductResponseDto;
 
+import java.util.List;
+
 public interface ProductService {
     ProductResponseDto getProductById(String id);
 
     ProductResponseDto createProduct(ProductRequestDto requestDto);
 
-    ProductResponseDto[] getAllProducts();
+    List<ProductResponseDto> getAllProducts();
 
-    ProductResponseDto deleteproductById(String id);
+    ProductResponseDto deleteProductById(String id); 
 
     ProductResponseDto updateProductById(String id, ProductRequestDto requestDto);
 }

@@ -12,4 +12,5 @@ public class FakeStoreResponseDto {
     Double price;
     String category;
     String description;
+    String image;
 }
