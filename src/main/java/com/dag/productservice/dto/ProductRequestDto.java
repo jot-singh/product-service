@@ -1,5 +1,7 @@
 package com.dag.productservice.dto;
 
+import com.dag.productservice.models.Price;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,7 +12,7 @@ import lombok.Setter;
 public class ProductRequestDto {
     String name;
     String title;
-    Double price;
+    Price price;
     String category;
     String description;
 }
