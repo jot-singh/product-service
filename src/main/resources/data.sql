@@ -1,5 +1,5 @@
---Insert Categories
-
+# --Insert Categories
+use products;
 INSERT INTO CATEGORIES(ID, NAME, DESCRIPTION)
 VALUES (UUID(), 'Fruits', 'Fruits');
 INSERT INTO CATEGORIES(ID, NAME, DESCRIPTION)
@@ -37,41 +37,106 @@ VALUES (UUID(), 'FOOTWEAR', 'CATEGORY FOR FOOTWEAR');
 INSERT INTO CATEGORIES(ID, NAME, DESCRIPTION)
 VALUES (UUID(), 'WATCHES', 'CATEGORY FOR WATCHES');
 
--- Insert Products
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'Milk', 'Milk', 'Milk', 1.99, (SELECT ID FROM CATEGORIES WHERE NAME = 'Drinks'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'Apple', 'Apple', 'Apple', 1.99, (SELECT ID FROM CATEGORIES WHERE NAME = 'Fruits'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'Orange', 'Orange', 'Orange', 2.99, (SELECT ID FROM CATEGORIES WHERE NAME = 'Fruits'));
+-- Insert Prices
+INSERT INTO prices(ID, price, CURRENCY)
+VALUES (UUID(), 1.99, 'USD');
+INSERT INTO prices(ID, price, CURRENCY)
+VALUES (UUID(), 2.99, 'USD');
+INSERT INTO prices(ID, price, CURRENCY)
+VALUES (UUID(), 3.99, 'USD');
+INSERT INTO prices(ID, price, CURRENCY)
+VALUES (UUID(), 50000, 'INR');
+INSERT INTO prices(ID, price, CURRENCY)
+VALUES (UUID(), 60000, 'INR');
 
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'Banana', 'Banana', 'Banana', 3.99, (SELECT ID FROM CATEGORIES WHERE NAME = 'Fruits'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'Potato', 'Potato', 'Potato', 1.99, (SELECT ID FROM CATEGORIES WHERE NAME = 'Vegetables'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'Tomato', 'Tomato', 'Tomato', 2.99, (SELECT ID FROM CATEGORIES WHERE NAME = 'Vegetables'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'Cucumber', 'Cucumber', 'Cucumber', 3.99, (SELECT ID FROM CATEGORIES WHERE NAME = 'Vegetables'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'Pork', 'Pork', 'Pork', 1.99, (SELECT ID FROM CATEGORIES WHERE NAME = 'Meat'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'Beef', 'Beef', 'Beef', 2.99, (SELECT ID FROM CATEGORIES WHERE NAME = 'Meat'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'Chicken', 'Chicken', 'Chicken', 3.99, (SELECT ID FROM CATEGORIES WHERE NAME = 'Meat'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'IPHONE 15', 'IPHONE 15', 'IPHONE 15', 50000, (SELECT ID FROM CATEGORIES WHERE NAME = 'MOBILES'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'IPHONE 16', 'IPHONE 16', 'IPHONE 16', 60000, (SELECT ID FROM CATEGORIES WHERE NAME = 'MOBILES'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'LENOVO', 'LENOVO', 'LENOVO', 50000, (SELECT ID FROM CATEGORIES WHERE NAME = 'LAPTOPS'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'DELL', 'DELL', 'DELL', 60000, (SELECT ID FROM CATEGORIES WHERE NAME = 'LAPTOPS'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'SAMSUNG', 'SAMSUNG', 'SAMSUNG', 50000, (SELECT ID FROM CATEGORIES WHERE NAME = 'TV'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'SONY', 'SONY', 'SONY', 60000, (SELECT ID FROM CATEGORIES WHERE NAME = 'TV'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'CANON', 'CANON', 'CANON', 50000, (SELECT ID FROM CATEGORIES WHERE NAME = 'CAMERA'));
-INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, PRICE, CATEGORY_ID)
-VALUES (UUID(), 'NIKON', 'NIKON', 'NIKON', 60000, (SELECT ID FROM CATEGORIES WHERE NAME = 'CAMERA'));
+
+-- Insert Products
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'Milk', 'Milk', 'Milk', (Select id from prices where
+                                                                   price = 1.99 and currency = 'USD'), (SELECT ID FROM CATEGORIES WHERE NAME = 'Drinks'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'Apple', 'Apple', 'Apple', (Select id
+                                         from prices
+                                         where price = 1.99
+                                           and currency = 'USD'), (SELECT ID FROM CATEGORIES WHERE NAME = 'Fruits'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'Orange', 'Orange', 'Orange', (Select id
+                                         from prices
+                                         where price = 2.99
+                                           and currency = 'USD'), (SELECT ID FROM CATEGORIES WHERE NAME = 'Fruits'));
+
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'Banana', 'Banana', 'Banana', (Select id
+                                         from prices
+                                         where price = 3.99
+                                           and currency = 'USD'), (SELECT ID FROM CATEGORIES WHERE NAME = 'Fruits'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'Potato', 'Potato', 'Potato', (Select id
+                                         from prices
+                                         where price = 1.99
+                                           and currency = 'USD'), (SELECT ID FROM CATEGORIES WHERE NAME = 'Vegetables'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'Tomato', 'Tomato', 'Tomato', (Select id
+                                         from prices
+                                         where price = 2.99
+                                           and currency = 'USD'), (SELECT ID FROM CATEGORIES WHERE NAME = 'Vegetables'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'Cucumber', 'Cucumber', 'Cucumber', (Select id
+                                         from prices
+                                         where price = 3.99
+                                           and currency = 'USD'), (SELECT ID FROM CATEGORIES WHERE NAME = 'Vegetables'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'Pork', 'Pork', 'Pork', (Select id
+                                         from prices
+                                         where price = 1.99
+                                           and currency = 'USD'), (SELECT ID FROM CATEGORIES WHERE NAME = 'Meat'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'Beef', 'Beef', 'Beef', (Select id
+                                         from prices
+                                         where price = 2.99
+                                           and currency = 'USD'), (SELECT ID FROM CATEGORIES WHERE NAME = 'Meat'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'Chicken', 'Chicken', 'Chicken', (Select id
+                                         from prices
+                                         where price = 3.99
+                                           and currency = 'USD'), (SELECT ID FROM CATEGORIES WHERE NAME = 'Meat'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'IPHONE 15', 'IPHONE 15', 'IPHONE 15', (Select id
+                                         from prices
+                                         where price = 50000
+                                           and currency = 'INR'), (SELECT ID FROM CATEGORIES WHERE NAME = 'MOBILES'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'IPHONE 16', 'IPHONE 16', 'IPHONE 16', (Select id
+                                         from prices
+                                         where price = 60000
+                                           and currency = 'INR'), (SELECT ID FROM CATEGORIES WHERE NAME = 'MOBILES'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'LENOVO', 'LENOVO', 'LENOVO', (Select id
+                                         from prices
+                                         where price = 50000
+                                           and currency = 'INR'), (SELECT ID FROM CATEGORIES WHERE NAME = 'LAPTOPS'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'DELL', 'DELL', 'DELL', (Select id
+                                         from prices
+                                         where price = 60000
+                                           and currency = 'INR'), (SELECT ID FROM CATEGORIES WHERE NAME = 'LAPTOPS'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'SAMSUNG', 'SAMSUNG', 'SAMSUNG', (Select id
+                                         from prices
+                                         where price = 50000
+                                           and currency = 'INR'), (SELECT ID FROM CATEGORIES WHERE NAME = 'TV'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'SONY', 'SONY', 'SONY', (Select id
+                                         from prices
+                                         where price = 60000
+                                           and currency = 'INR'), (SELECT ID FROM CATEGORIES WHERE NAME = 'TV'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'CANON', 'CANON', 'CANON', (Select id
+                                         from prices
+                                         where price = 50000
+                                           and currency = 'INR'), (SELECT ID FROM CATEGORIES WHERE NAME = 'CAMERA'));
+INSERT INTO PRODUCTS(ID, NAME, TITLE, DESCRIPTION, price_id, CATEGORY_ID)
+VALUES (UUID(), 'NIKON', 'NIKON', 'NIKON', (Select id
+                                         from prices
+                                         where price = 60000
+                                           and currency = 'INR'), (SELECT ID FROM CATEGORIES WHERE NAME = 'CAMERA'));
