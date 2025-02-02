@@ -1,20 +1,21 @@
 package com.dag.productservice.controller;
 
+import com.dag.productservice.security.JwtObject;
+import com.dag.productservice.security.TokenValidator;
+import jakarta.annotation.Nullable;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.dag.productservice.dto.ProductRequestDto;
 import com.dag.productservice.dto.ProductResponseDto;
 import com.dag.productservice.services.product.ProductService;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -22,25 +23,43 @@ public class ProductController {
 
     @Autowired
     private ProductService productService;
+    @Autowired
+    private TokenValidator tokenValidator;
 
-    ProductController(ProductService productService) {
+    ProductController(ProductService productService, TokenValidator tokenValidator) {
         this.productService = productService;
+        this.tokenValidator = tokenValidator;
     }
 
     @GetMapping
-    public ResponseEntity<ProductResponseDto[]> getAllProducts() {
+    public ResponseEntity<List<ProductResponseDto>> getAllProducts() {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDto> getProductById(@PathVariable("id") String id) {
+    public ResponseEntity<ProductResponseDto> getProductById(@Nullable @RequestHeader(HttpHeaders.AUTHORIZATION) String authToken,
+                                                             @PathVariable("id") String id, HttpServletRequest request) {
+
+        System.out.println(authToken);
+        Optional<JwtObject> authTokenObjOptional;
+        JwtObject authTokenObj = null;
+
+        if (authToken != null) {
+            authTokenObjOptional = tokenValidator.validateToken(authToken);
+            if (authTokenObjOptional.isEmpty()) {
+                // ignore
+            }
+
+            authTokenObj = authTokenObjOptional.get();
+        }
+
         return ResponseEntity.ok(productService.getProductById(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ProductResponseDto> deleteproductById(@PathVariable("id") String id) {
         return ResponseEntity.ok(
-                productService.deleteproductById(id));
+                productService.deleteProductById(id));
     }
 
     @PostMapping

@@ -1,12 +1,13 @@
 package com.dag.productservice.security;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Optional;
 
-@Service
+@Component
 public class TokenValidator {
     private RestTemplateBuilder restTemplateBuilder;
 
