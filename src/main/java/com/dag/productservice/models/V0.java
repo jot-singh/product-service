@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.id.uuid.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -14,8 +15,9 @@ import java.util.UUID;
 public abstract class V0 {
 
     @Id
-    @GeneratedValue(generator = "uuid",strategy = GenerationType.UUID)
-    @GenericGenerator(name = "uuid",strategy = "uuid2")
+    @GeneratedValue(generator = "uuid")
+    @GenericGenerator(name = "uuid", strategy = "uuid2")
+    @Column(name = "id", columnDefinition = "binary(36)", nullable = false, updatable = false)
     protected UUID Id;
     @Column
     protected String modifiedBy;

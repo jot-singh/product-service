@@ -22,6 +22,8 @@ public class Product extends V0 {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-    @Column
-    private double price;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, fetch = FetchType.LAZY)
+    @JoinColumn(name = "price_id")
+    private Price price;
 }

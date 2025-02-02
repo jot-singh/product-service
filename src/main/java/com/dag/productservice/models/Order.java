@@ -12,7 +12,7 @@ import java.util.List;
 @Entity(name = "orders")
 @Getter
 @Setter
-public class Order extends BaseModel {
+public class Order extends V0 {
 
     @ManyToMany()
     @JoinTable(
