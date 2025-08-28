@@ -29,17 +29,17 @@ Configure `productservice` to validate incoming JWTs from clients (e.g., a front
 
 ---
 
-### Phase 3: Role-Based Access Control (RBAC) (⏳ PENDING)
+### Phase 3: Role-Based Access Control (RBAC) (✅ COMPLETED)
 Implement fine-grained access control on API endpoints.
 
-- [ ] **Secure Endpoints with Annotations**: Use `@PreAuthorize` on controller methods to restrict access based on roles or authorities.
+- [x] **Secure Endpoints with Annotations**: Use `@PreAuthorize` on controller methods to restrict access based on roles or authorities.
     - Example: Restrict product creation to users with the `ADMIN` role (`@PreAuthorize("hasRole('ADMIN')")`).
     - Example: Restrict product updates to users with a specific scope (`@PreAuthorize("hasAuthority('SCOPE_products.write')")`).
 
 ---
 
-### Phase 4: Service-to-Service Communication (Client Credentials) (⏳ PENDING)
+### Phase 4: Service-to-Service Communication (Client Credentials) (✅ COMPLETED)
 Enable `productservice` to securely communicate with `user-service` for backend operations.
 
-- [ ] **Add Client Configuration**: Add the OAuth2 client credentials for `productservice` to `application.properties`.
-- [ ] **Create a Configured `WebClient`**: Create a `WebClient` bean that is automatically configured to handle the OAuth2 client credentials flow. This `WebClient` can then be used in your services to make authenticated calls to the `user-service`.
+- [x] **Add Client Configuration**: Add the OAuth2 client credentials for `productservice` to `application.properties`.
+- [x] **Create a Configured `WebClient`**: Create a `WebClient` bean that is automatically configured to handle the OAuth2 client credentials flow. This `WebClient` can then be used in your services to make authenticated calls to the `user-service`.
