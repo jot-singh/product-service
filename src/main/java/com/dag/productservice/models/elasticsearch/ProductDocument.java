@@ -1,4 +1,4 @@
-package com.dag.productservice.model.elasticsearch;
+package com.dag.productservice.models.elasticsearch;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
