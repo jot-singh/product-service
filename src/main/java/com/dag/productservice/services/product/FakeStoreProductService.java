@@ -11,6 +11,7 @@ import com.dag.productservice.dto.FakeStoreResponseDto;
 import com.dag.productservice.dto.ProductRequestDto;
 import com.dag.productservice.dto.ProductResponseDto;
 import com.dag.productservice.exceptionhandlers.exceptions.NotFoundException;
+import com.dag.productservice.models.Price;
 
 @Service
 public class FakeStoreProductService implements ProductService {
@@ -26,7 +27,15 @@ public class FakeStoreProductService implements ProductService {
         ProductResponseDto productResponseDto = new ProductResponseDto();
         productResponseDto.setId(String.valueOf(fakeStoreResponseDto.getId()));
         productResponseDto.setTitle(fakeStoreResponseDto.getTitle());
-        productResponseDto.setPrice(fakeStoreResponseDto.getPrice());
+
+        // Create Price object from Double
+        if (fakeStoreResponseDto.getPrice() != null) {
+            Price price = new Price();
+            price.setPrice(fakeStoreResponseDto.getPrice());
+            price.setCurrency("USD"); // Default currency for FakeStore
+            productResponseDto.setPrice(price);
+        }
+
         productResponseDto.setDescription(fakeStoreResponseDto.getDescription());
         productResponseDto.setCategory(fakeStoreResponseDto.getCategory());
         //productResponseDto.setImage(fakeStoreResponseDto.getImage());
