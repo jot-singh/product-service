@@ -1,13 +1,14 @@
 package com.dag.productservice.conf;
 
-import com.bucket4j.Bandwidth;
-import com.bucket4j.BucketConfiguration;
-import com.bucket4j.redis.lettuce.cas.LettuceBasedProxyManager;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.BucketConfiguration;
+import io.github.bucket4j.redis.lettuce.cas.LettuceBasedProxyManager;
 import io.lettuce.core.RedisClient;
-import io.lettuce.core.api.StatefulRedisConnection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
 
 import java.time.Duration;
 
@@ -18,12 +19,20 @@ import java.time.Duration;
 @Configuration
 public class RateLimitConfig {
 
+    private static final Logger logger = LoggerFactory.getLogger(RateLimitConfig.class);
+
+    @Value("${spring.data.redis.host:localhost}")
+    private String redisHost;
+
+    @Value("${spring.data.redis.port:6379}")
+    private int redisPort;
+
     /**
      * Default bucket configuration for API rate limiting
      * Allows 100 requests per minute and 1000 requests per hour
      */
     @Bean
-    public BucketConfiguration defaultBucketConfiguration() {
+    public io.github.bucket4j.BucketConfiguration defaultBucketConfiguration() {
         return BucketConfiguration.builder()
             .addLimit(Bandwidth.simple(100, Duration.ofMinutes(1)))  // 100 requests per minute
             .addLimit(Bandwidth.simple(1000, Duration.ofHours(1)))   // 1000 requests per hour
@@ -47,16 +56,18 @@ public class RateLimitConfig {
      * Uses Lettuce Redis client for connection management
      */
     @Bean
-    public LettuceBasedProxyManager<String> lettuceBasedProxyManager(RedisConnectionFactory connectionFactory) {
-        // Get Redis connection details from the connection factory
-        String redisUri = "redis://" + connectionFactory.getConnection().getServerCommands().info().get("tcp_port");
+    public LettuceBasedProxyManager lettuceBasedProxyManager() {
+        try {
+            // Create Redis client with proper configuration
+            RedisClient redisClient = RedisClient.create(String.format("redis://%s:%d", redisHost, redisPort));
+            logger.info("Connecting to Redis at: {}:{}", redisHost, redisPort);
 
-        RedisClient redisClient = RedisClient.create(redisUri);
-        StatefulRedisConnection<String, String> connection = redisClient.connect();
-
-        return LettuceBasedProxyManager.builderFor(connection)
-            .withExpirationStrategy(com.bucket4j.redis.lettuce.cas.LettuceBasedProxyManager.ExpirationAfterWriteStrategy
-                .basedOnTimeForRefillingBucketUpToMax(Duration.ofHours(1)))
-            .build();
+            // Use the RedisClient builder method
+            return LettuceBasedProxyManager.builderFor(redisClient)
+                .build();
+        } catch (Exception e) {
+            logger.error("Failed to create LettuceBasedProxyManager", e);
+            throw new RuntimeException("Failed to initialize rate limiting proxy manager", e);
+        }
     }
 }

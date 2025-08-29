@@ -1,4 +1,4 @@
-package com.dag.productservice.exceptionhandlers;
+package com.dag.productservice.exceptionhandlers.dto;
 
 import org.springframework.http.HttpStatus;
 
@@ -13,7 +13,7 @@ public class ResponseErrorDto {
     private String errorMessage;
     private HttpStatus status;
 
-    ResponseErrorDto(String errorMessage, HttpStatus httpStatus){
+    public ResponseErrorDto(String errorMessage, HttpStatus httpStatus){
         this.errorMessage = errorMessage;
         this.status = httpStatus;
     }
