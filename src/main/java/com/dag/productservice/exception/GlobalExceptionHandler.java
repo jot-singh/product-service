@@ -1,5 +1,6 @@
 package com.dag.productservice.exception;
 
+import com.dag.productservice.exceptionhandlers.exceptions.RateLimitExceededException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
