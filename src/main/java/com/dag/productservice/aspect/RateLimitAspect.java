@@ -10,7 +10,9 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -132,15 +134,22 @@ public class RateLimitAspect {
 
     /**
      * Get current user ID from security context
-     * This is a placeholder - implement based on your authentication mechanism
+     * Extracts user ID from Spring Security authentication
      */
     private String getCurrentUserId() {
-        // TODO: Implement based on your authentication mechanism
-        // For example, if using Spring Security:
-        // Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        // if (authentication != null && authentication.getPrincipal() instanceof UserDetails) {
-        //     return ((UserDetails) authentication.getPrincipal()).getUsername();
-        // }
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            if (authentication != null && authentication.isAuthenticated()) {
+                Object principal = authentication.getPrincipal();
+                if (principal instanceof UserDetails) {
+                    return ((UserDetails) principal).getUsername();
+                } else if (principal instanceof String) {
+                    return (String) principal;
+                }
+            }
+        } catch (Exception e) {
+            logger.debug("Could not extract user ID from security context: {}", e.getMessage());
+        }
         return null;
     }
 }
