@@ -1,7 +1,7 @@
 package com.dag.productservice.aspect;
 
 import com.dag.productservice.annotation.RateLimited;
-import com.dag.productservice.exceptionhandlers.exceptions.RateLimitExceededException;
+import com.dag.productservice.exception.RateLimitExceededException;
 import com.dag.productservice.service.RateLimitService;
 import io.github.bucket4j.Bucket;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,6 +21,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 /**
  * AOP Aspect for applying rate limiting to methods annotated with @RateLimited
  * Intercepts method calls and applies rate limiting based on the annotation configuration
+ * Gracefully handles cases when Redis is not available by skipping rate limiting
  */
 @Aspect
 @Component
@@ -27,10 +29,25 @@ public class RateLimitAspect {
 
     private static final Logger logger = LoggerFactory.getLogger(RateLimitAspect.class);
 
-    private final RateLimitService rateLimitService;
+    private RateLimitService rateLimitService;
+    private boolean rateLimitingEnabled = true;
 
+    public RateLimitAspect() {
+        // Default constructor for when RateLimitService is not available
+        this.rateLimitingEnabled = false;
+        logger.warn("RateLimitService not available, rate limiting will be disabled");
+    }
+
+    @Autowired(required = false)
     public RateLimitAspect(RateLimitService rateLimitService) {
         this.rateLimitService = rateLimitService;
+        if (rateLimitService != null) {
+            this.rateLimitingEnabled = true;
+            logger.info("Rate limiting enabled with Redis support");
+        } else {
+            this.rateLimitingEnabled = false;
+            logger.warn("RateLimitService not available, rate limiting will be disabled");
+        }
     }
 
     /**
@@ -39,6 +56,12 @@ public class RateLimitAspect {
      */
     @Around("@annotation(rateLimited)")
     public Object enforceRateLimit(ProceedingJoinPoint joinPoint, RateLimited rateLimited) throws Throwable {
+        // If rate limiting is disabled (Redis not available), skip rate limiting
+        if (!rateLimitingEnabled || rateLimitService == null) {
+            logger.debug("Rate limiting disabled, proceeding without rate limit check");
+            return joinPoint.proceed();
+        }
+
         String bucketKey = generateBucketKey(rateLimited);
 
         logger.debug("Applying rate limiting for key: {} with strategy: {}", bucketKey, rateLimited.value());
@@ -71,6 +94,11 @@ public class RateLimitAspect {
 
         String clientIp = getClientIpAddress(request);
 
+        if (rateLimitService == null) {
+            // Fallback when rate limiting service is not available
+            return "fallback:" + clientIp;
+        }
+
         switch (rateLimited.value()) {
             case IP_BASED:
                 return rateLimitService.createIpBasedKey(clientIp);
@@ -97,6 +125,11 @@ public class RateLimitAspect {
      * Resolve the appropriate bucket based on rate limiting configuration
      */
     private Bucket resolveBucket(String key, RateLimited rateLimited) {
+        if (rateLimitService == null) {
+            // This should not happen since we check in enforceRateLimit, but fallback just in case
+            throw new IllegalStateException("Rate limiting service is not available");
+        }
+
         switch (rateLimited.value()) {
             case STRICT:
                 return rateLimitService.resolveStrictBucket(key);

@@ -1,4 +1,4 @@
-package com.dag.productservice.exceptionhandlers.exceptions;
+package com.dag.productservice.exception;
 
 import lombok.Getter;
 

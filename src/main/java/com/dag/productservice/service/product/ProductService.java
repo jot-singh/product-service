@@ -1,4 +1,4 @@
-package com.dag.productservice.services.product;
+package com.dag.productservice.service.product;
 
 import com.dag.productservice.dto.ProductRequestDto;
 import com.dag.productservice.dto.ProductResponseDto;

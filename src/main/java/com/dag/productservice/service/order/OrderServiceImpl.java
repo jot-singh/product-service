@@ -1,4 +1,4 @@
-package com.dag.productservice.services.impl;
+package com.dag.productservice.service.order;
 
 import com.dag.productservice.dao.schema.OrderRepository;
 import com.dag.productservice.dao.schema.OrderItemRepository;
@@ -10,7 +10,6 @@ import com.dag.productservice.dto.OrderStatusUpdateRequestDto;
 import com.dag.productservice.exception.OrderNotFoundException;
 import com.dag.productservice.exception.ProductNotFoundException;
 import com.dag.productservice.models.*;
-import com.dag.productservice.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

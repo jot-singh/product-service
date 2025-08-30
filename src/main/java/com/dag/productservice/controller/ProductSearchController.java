@@ -1,7 +1,7 @@
 package com.dag.productservice.controller;
 
 import com.dag.productservice.models.elasticsearch.ProductDocument;
-import com.dag.productservice.service.ProductSearchService;
+import com.dag.productservice.service.search.ProductSearchService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/search")
 @Slf4j
+@ConditionalOnProperty(name = "elasticsearch.enabled", havingValue = "true")
 public class ProductSearchController {
 
     @Autowired

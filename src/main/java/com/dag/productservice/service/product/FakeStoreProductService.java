@@ -1,4 +1,4 @@
-package com.dag.productservice.services.product;
+package com.dag.productservice.service.product;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +10,7 @@ import com.dag.productservice.clients.fakestore.FakeStoreProductServiceClient;
 import com.dag.productservice.dto.FakeStoreResponseDto;
 import com.dag.productservice.dto.ProductRequestDto;
 import com.dag.productservice.dto.ProductResponseDto;
-import com.dag.productservice.exceptionhandlers.exceptions.NotFoundException;
+import com.dag.productservice.exception.NotFoundException;
 import com.dag.productservice.models.Price;
 
 @Service

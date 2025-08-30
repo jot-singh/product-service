@@ -1,4 +1,4 @@
-package com.dag.productservice.services;
+package com.dag.productservice.service.order;
 
 import com.dag.productservice.dto.OrderRequestDto;
 import com.dag.productservice.dto.OrderResponseDto;

@@ -1,4 +1,4 @@
-package com.dag.productservice.service;
+package com.dag.productservice.service.search;
 
 import com.dag.productservice.dao.schema.LocalProductRepository;
 import com.dag.productservice.models.Product;
@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import jakarta.annotation.PostConstruct;
 import java.math.BigDecimal;
@@ -23,13 +24,14 @@ import java.util.Optional;
  * Service for synchronizing product data between MySQL and Elasticsearch
  */
 @Service
+@ConditionalOnProperty(name = "elasticsearch.enabled", havingValue = "true")
 @Slf4j
 public class ProductIndexingService {
 
     @Autowired
     private LocalProductRepository productRepository;
 
-    @Autowired
+    @Autowired(required = false)
     private ProductSearchService productSearchService;
 
     /**

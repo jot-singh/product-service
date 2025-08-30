@@ -3,7 +3,7 @@ package com.dag.productservice.controller;
 import com.dag.productservice.annotation.RateLimited;
 import com.dag.productservice.dto.ProductRequestDto;
 import com.dag.productservice.dto.ProductResponseDto;
-import com.dag.productservice.services.product.ProductService;
+import com.dag.productservice.service.product.ProductService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

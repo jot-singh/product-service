@@ -2,7 +2,7 @@ package com.dag.productservice.controller;
 
 import com.dag.productservice.dto.CategoryResponseDto;
 import com.dag.productservice.dto.CategoryRequestDto;
-import com.dag.productservice.services.category.CategoryService;
+import com.dag.productservice.service.product.CategoryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

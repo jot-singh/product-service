@@ -1,5 +1,7 @@
 package com.dag.productservice.services;
 
+import com.dag.productservice.service.cache.CacheInvalidationService;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

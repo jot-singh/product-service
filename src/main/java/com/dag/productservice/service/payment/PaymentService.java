@@ -1,4 +1,4 @@
-package com.dag.productservice.services;
+package com.dag.productservice.service.payment;
 
 import com.dag.productservice.dto.PaymentRequestDto;
 import com.dag.productservice.dto.PaymentResponseDto;

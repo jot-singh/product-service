@@ -6,6 +6,7 @@ import co.elastic.clients.transport.ElasticsearchTransport;
 import co.elastic.clients.transport.rest_client.RestClientTransport;
 import org.apache.http.HttpHost;
 import org.elasticsearch.client.RestClient;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.elasticsearch.repository.config.EnableElasticsearchRepositories;
@@ -14,6 +15,7 @@ import org.springframework.data.elasticsearch.repository.config.EnableElasticsea
  * Elasticsearch configuration for product search functionality
  */
 @Configuration
+@ConditionalOnProperty(name = "elasticsearch.enabled", havingValue = "true", matchIfMissing = false)
 @EnableElasticsearchRepositories(basePackages = "com.dag.productservice.repository.elasticsearch")
 public class ElasticsearchConfig {
 

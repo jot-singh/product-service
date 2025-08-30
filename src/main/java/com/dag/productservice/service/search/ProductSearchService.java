@@ -1,4 +1,4 @@
-package com.dag.productservice.service;
+package com.dag.productservice.service.search;
 
 import com.dag.productservice.models.elasticsearch.ProductDocument;
 import com.dag.productservice.repository.elasticsearch.ProductSearchRepository;
@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,6 +16,7 @@ import java.util.List;
  * Service for Elasticsearch-based product search operations
  */
 @Service
+@ConditionalOnProperty(name = "elasticsearch.enabled", havingValue = "true")
 @Slf4j
 public class ProductSearchService {
 

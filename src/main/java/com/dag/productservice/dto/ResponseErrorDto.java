@@ -1,4 +1,4 @@
-package com.dag.productservice.exceptionhandlers.dto;
+package com.dag.productservice.dto;
 
 import org.springframework.http.HttpStatus;
 

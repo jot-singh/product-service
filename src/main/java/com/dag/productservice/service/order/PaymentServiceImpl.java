@@ -1,8 +1,8 @@
-package com.dag.productservice.services.impl;
+package com.dag.productservice.service.order;
 
 import com.dag.productservice.dto.PaymentRequestDto;
 import com.dag.productservice.dto.PaymentResponseDto;
-import com.dag.productservice.services.PaymentService;
+import com.dag.productservice.service.payment.PaymentService;
 import org.springframework.stereotype.Service;
 
 @Service

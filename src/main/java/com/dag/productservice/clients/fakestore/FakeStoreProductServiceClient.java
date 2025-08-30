@@ -16,7 +16,7 @@ import org.springframework.web.client.RestTemplate;
 import com.dag.productservice.dto.FakeStoreResponseDto;
 import com.dag.productservice.dto.ProductRequestDto;
 import com.dag.productservice.dto.clients.ClientProductRequestDto;
-import com.dag.productservice.exceptionhandlers.exceptions.NotFoundException;
+import com.dag.productservice.exception.NotFoundException;
 
 /* 
  * Fake Store Product Service Client Wrapper

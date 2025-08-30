@@ -1,5 +1,7 @@
 package com.dag.productservice.service;
 
+import com.dag.productservice.service.search.ProductSearchService;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

@@ -1,10 +1,10 @@
-package com.dag.productservice.services.category;
+package com.dag.productservice.service.product;
 
 import com.dag.productservice.dao.schema.CategoryRepository;
 import com.dag.productservice.dto.CategoryRequestDto;
 import com.dag.productservice.dto.CategoryResponseDto;
 import com.dag.productservice.dto.ProductResponseDto;
-import com.dag.productservice.exceptionhandlers.exceptions.NotFoundException;
+import com.dag.productservice.exception.NotFoundException;
 import com.dag.productservice.models.Category;
 import com.dag.productservice.models.Product;
 import jakarta.transaction.Transactional;

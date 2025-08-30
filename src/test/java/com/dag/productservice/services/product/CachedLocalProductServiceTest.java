@@ -4,7 +4,7 @@ import com.dag.productservice.dao.schema.CategoryRepository;
 import com.dag.productservice.dao.schema.LocalProductRepository;
 import com.dag.productservice.dto.ProductRequestDto;
 import com.dag.productservice.dto.ProductResponseDto;
-import com.dag.productservice.exceptionhandlers.exceptions.NotFoundException;
+import com.dag.productservice.exception.NotFoundException;
 import com.dag.productservice.models.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+
+import com.dag.productservice.service.product.CachedLocalProductService;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;

@@ -4,7 +4,7 @@ import com.dag.productservice.dto.OrderRequestDto;
 import com.dag.productservice.dto.OrderResponseDto;
 import com.dag.productservice.dto.OrderStatusUpdateRequestDto;
 import com.dag.productservice.models.Order;
-import com.dag.productservice.services.OrderService;
+import com.dag.productservice.service.order.OrderService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;

@@ -2,7 +2,7 @@ package com.dag.productservice.controller;
 
 import com.dag.productservice.dto.PaymentRequestDto;
 import com.dag.productservice.dto.PaymentResponseDto;
-import com.dag.productservice.services.PaymentService;
+import com.dag.productservice.service.payment.PaymentService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -7,9 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import com.dag.productservice.exceptionhandlers.dto.ResponseErrorDto;
-import com.dag.productservice.exceptionhandlers.exceptions.NotFoundException;
-import com.dag.productservice.exceptionhandlers.exceptions.RateLimitExceededException;
+import com.dag.productservice.exception.NotFoundException;
+import com.dag.productservice.exception.OrderNotFoundException;
+import com.dag.productservice.exception.ProductNotFoundException;
+import com.dag.productservice.exception.RateLimitExceededException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -21,24 +22,55 @@ public class GlobalExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(NotFoundException.class)
-    public ResponseEntity<ResponseErrorDto> handleNotFoundException(NotFoundException notFound){
-        return new ResponseEntity<>(
-                new ResponseErrorDto(notFound.getErrorMessage(), HttpStatus.NOT_FOUND),
-                HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, Object>> handleNotFoundException(NotFoundException notFound){
+        logger.warn("Resource not found: {}", notFound.getMessage());
+
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.NOT_FOUND.value());
+        errorResponse.put("error", "Not Found");
+        errorResponse.put("message", notFound.getMessage());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({OrderNotFoundException.class, ProductNotFoundException.class})
+    public ResponseEntity<Map<String, Object>> handleDomainNotFoundExceptions(RuntimeException ex){
+        logger.warn("Domain entity not found: {}", ex.getMessage());
+
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.NOT_FOUND.value());
+        errorResponse.put("error", "Not Found");
+        errorResponse.put("message", ex.getMessage());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ResponseErrorDto> handleIllegalArgumentException(IllegalArgumentException illegalArgument){
-        return new ResponseEntity<>(
-                new ResponseErrorDto(illegalArgument.getMessage(), HttpStatus.BAD_REQUEST),
-                HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, Object>> handleIllegalArgumentException(IllegalArgumentException illegalArgument){
+        logger.warn("Invalid argument: {}", illegalArgument.getMessage());
+
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
+        errorResponse.put("error", "Bad Request");
+        errorResponse.put("message", illegalArgument.getMessage());
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<ResponseErrorDto> handleNullPointerException(NullPointerException nullPointer){
-        return new ResponseEntity<>(
-                new ResponseErrorDto(nullPointer.getMessage(), HttpStatus.BAD_REQUEST),
-                HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Map<String, Object>> handleNullPointerException(NullPointerException nullPointer){
+        logger.error("Null pointer exception: {}", nullPointer.getMessage());
+
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
+        errorResponse.put("error", "Bad Request");
+        errorResponse.put("message", "Invalid request data");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -65,10 +97,15 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<ResponseErrorDto> handleException(Exception exception){
+    public ResponseEntity<Map<String, Object>> handleException(Exception exception){
         logger.error("Unexpected error occurred", exception);
-        return new ResponseEntity<>(
-                new ResponseErrorDto("An unexpected error occurred", HttpStatus.INTERNAL_SERVER_ERROR),
-                HttpStatus.INTERNAL_SERVER_ERROR);
+
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("timestamp", LocalDateTime.now());
+        errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorResponse.put("error", "Internal Server Error");
+        errorResponse.put("message", "An unexpected error occurred");
+
+        return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

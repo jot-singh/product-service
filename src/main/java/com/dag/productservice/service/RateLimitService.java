@@ -5,6 +5,7 @@ import io.github.bucket4j.BucketConfiguration;
 import io.github.bucket4j.redis.lettuce.cas.LettuceBasedProxyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,6 +13,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Service for managing rate limiting buckets using Bucket4j with Redis backend
  * Provides distributed rate limiting across multiple service instances
+ * Falls back to local buckets when Redis is not available
  */
 @Service
 public class RateLimitService {
@@ -25,12 +27,24 @@ public class RateLimitService {
     // Local cache for buckets to improve performance
     private final ConcurrentHashMap<String, Bucket> localBucketCache = new ConcurrentHashMap<>();
 
+    @org.springframework.beans.factory.annotation.Autowired
+    public RateLimitService(BucketConfiguration defaultBucketConfiguration,
+                          BucketConfiguration strictBucketConfiguration) {
+        this(null, defaultBucketConfiguration, strictBucketConfiguration);
+    }
+
     public RateLimitService(LettuceBasedProxyManager proxyManager,
                           BucketConfiguration defaultBucketConfiguration,
                           BucketConfiguration strictBucketConfiguration) {
         this.proxyManager = proxyManager;
         this.defaultBucketConfiguration = defaultBucketConfiguration;
         this.strictBucketConfiguration = strictBucketConfiguration;
+
+        if (proxyManager == null) {
+            logger.warn("LettuceBasedProxyManager not available, falling back to local rate limiting");
+        } else {
+            logger.info("Using Redis-based distributed rate limiting");
+        }
     }
 
     /**
@@ -51,11 +65,18 @@ public class RateLimitService {
     public Bucket resolveBucket(String key, BucketConfiguration configuration) {
         return localBucketCache.computeIfAbsent(key, k -> {
             try {
-                logger.debug("Creating new bucket for key: {}", k);
-                return proxyManager.builder().build(k.getBytes(), () -> configuration);
+                if (proxyManager != null) {
+                    logger.debug("Creating distributed bucket for key: {}", k);
+                    return proxyManager.builder().build(k.getBytes(), () -> configuration);
+                } else {
+                    logger.debug("Creating local bucket for key: {} (Redis not available)", k);
+                    return Bucket.builder().addLimit(configuration.getBandwidths()[0]).build();
+                }
             } catch (Exception e) {
                 logger.error("Failed to create bucket for key: {}", k, e);
-                throw new RuntimeException("Failed to create rate limit bucket", e);
+                // Fallback to local bucket if distributed bucket creation fails
+                logger.warn("Falling back to local bucket for key: {}", k);
+                return Bucket.builder().addLimit(configuration.getBandwidths()[0]).build();
             }
         });
     }

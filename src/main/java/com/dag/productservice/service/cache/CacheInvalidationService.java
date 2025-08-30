@@ -1,4 +1,4 @@
-package com.dag.productservice.services;
+package com.dag.productservice.service.cache;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.Cache;
