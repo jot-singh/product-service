@@ -67,11 +67,11 @@ public class ProductIndexingService {
     public void reindexAllProducts() {
         log.info("Starting full product reindexing...");
 
-        List<Product> products = productRepository.findAll();
+        List<Product> products = productRepository.findAllWithPriceAndCategory();
         List<ProductDocument> documents = new ArrayList<>();
 
         for (Product product : products) {
-            if (!product.getIsDeleted()) {
+            if (product.getIsDeleted() == null || !product.getIsDeleted()) {
                 ProductDocument document = convertToDocument(product);
                 documents.add(document);
             }
