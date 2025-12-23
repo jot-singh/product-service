@@ -175,18 +175,328 @@ See [API_SPECIFICATION.md](API_SPECIFICATION.md) for complete API reference with
 
 ## 🔐 Authentication
 
-All endpoints require JWT token from User Service:
+### Getting Started with Authentication
 
+Product Service uses JWT tokens issued by the User Service for authentication. Follow these steps:
+
+#### Step 1: Register or Login to User Service
+
+**Option A: Register New User**
 ```bash
-# Get token from User Service
+curl -X POST http://localhost:8444/auth/signUp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "customer1",
+    "email": "customer@example.com",
+    "password": "Password@123",
+    "firstName": "Jane",
+    "lastName": "Smith"
+  }'
+```
+
+**Option B: Login with Existing User**
+```bash
 curl -X POST http://localhost:8444/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"username": "user@example.com", "password": "password"}'
+  -d '{
+    "username": "customer1",
+    "password": "Password@123"
+  }'
+```
 
-# Use token in Product Service
-curl -H "Authorization: Bearer YOUR_JWT_TOKEN" \
+**Response (save the token):**
+```json
+{
+  "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjdXN0b21lcjEi...",
+  "expiresAt": "2024-12-24T10:30:00",
+  "user": {
+    "id": 1,
+    "username": "customer1",
+    "role": "CUSTOMER"
+  }
+}
+```
+
+#### Step 2: Use Token in Product Service
+
+```bash
+# Save your token
+TOKEN="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjdXN0b21lcjEi..."
+
+# Access Product Service APIs
+curl -H "Authorization: Bearer $TOKEN" \
   http://localhost:8080/api/products
 ```
+
+---
+
+## 👤 User Operations Guide
+
+### Browse Products (Authenticated)
+
+```bash
+# List all products
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/api/products
+
+# Get specific product
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/api/products/1
+
+# Search products
+curl -H "Authorization: Bearer $TOKEN" \
+  "http://localhost:8080/api/search/products?query=laptop"
+```
+
+### Browse Categories
+
+```bash
+# List all categories
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/api/categories
+
+# Get products in category
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/api/categories/1/products
+```
+
+### Create Order
+
+```bash
+curl -X POST http://localhost:8080/api/orders \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "items": [
+      {
+        "productId": 1,
+        "quantity": 2
+      }
+    ],
+    "shippingAddress": {
+      "street": "123 Main St",
+      "city": "New York",
+      "state": "NY",
+      "zipCode": "10001",
+      "country": "USA"
+    }
+  }'
+```
+
+### Make Payment
+
+```bash
+curl -X POST http://localhost:8080/api/payments \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "orderId": 123,
+    "amount": 99.99,
+    "currency": "USD"
+  }'
+```
+
+---
+
+## 👨‍💼 Admin Operations Guide
+
+### Admin Registration
+
+Admins must be created in the User Service first. See [User Service README](../user-service/README.md#-admin-registration--login-guide) for admin creation steps.
+
+**Quick Admin Creation (Database):**
+```sql
+-- In User Service database
+INSERT INTO users (username, password, email, first_name, last_name, role, email_verified)
+VALUES (
+  'admin',
+  '$2a$10$xN3wV8Jb0eKQ0P4vKTqXxO7iRxEw0Z0fGMQY9r8v8/H2hJKq9nGzS', -- Password@123
+  'admin@example.com',
+  'Admin',
+  'User',
+  'ADMIN',
+  true
+);
+```
+
+### Admin Login & Token
+
+```bash
+# Login as admin in User Service
+curl -X POST http://localhost:8444/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "admin",
+    "password": "Password@123"
+  }'
+
+# Save admin token
+ADMIN_TOKEN="eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiI..."
+```
+
+### Manage Categories (Admin Only)
+
+```bash
+# Create category
+curl -X POST http://localhost:8080/api/categories \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Electronics",
+    "description": "Electronic devices and accessories"
+  }'
+
+# Update category
+curl -X PUT http://localhost:8080/api/categories/1 \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Electronics & Gadgets",
+    "description": "Latest electronic devices"
+  }'
+
+# Delete category
+curl -X DELETE http://localhost:8080/api/categories/1 \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+```
+
+### Manage Products (Admin Only)
+
+```bash
+# Create product
+curl -X POST http://localhost:8080/api/products \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "MacBook Pro 16",
+    "description": "Apple MacBook Pro with M3 chip",
+    "price": 2499.99,
+    "stock": 50,
+    "categoryId": 1,
+    "imageUrl": "https://example.com/macbook.jpg"
+  }'
+
+# Update product
+curl -X PUT http://localhost:8080/api/products/1 \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "MacBook Pro 16 (2024)",
+    "price": 2399.99,
+    "stock": 75
+  }'
+
+# Delete product
+curl -X DELETE http://localhost:8080/api/products/1 \
+  -H "Authorization: Bearer $ADMIN_TOKEN"
+```
+
+### View All Orders (Admin Only)
+
+```bash
+# List all orders
+curl -H "Authorization: Bearer $ADMIN_TOKEN" \
+  http://localhost:8080/api/orders/all
+
+# Get specific order details
+curl -H "Authorization: Bearer $ADMIN_TOKEN" \
+  http://localhost:8080/api/orders/123
+
+# Update order status
+curl -X PUT http://localhost:8080/api/orders/123/status \
+  -H "Authorization: Bearer $ADMIN_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "status": "SHIPPED",
+    "trackingNumber": "TRK123456789"
+  }'
+```
+
+---
+
+## 🔑 Role-Based Access Control
+
+### Permission Matrix
+
+| Endpoint | Customer | Merchant | Admin |
+|----------|----------|----------|-------|
+| **Products** |
+| GET /api/products | ✅ View | ✅ View | ✅ View |
+| POST /api/products | ❌ No | ✅ Create | ✅ Create |
+| PUT /api/products/{id} | ❌ No | ✅ Own | ✅ All |
+| DELETE /api/products/{id} | ❌ No | ✅ Own | ✅ All |
+| **Categories** |
+| GET /api/categories | ✅ View | ✅ View | ✅ View |
+| POST /api/categories | ❌ No | ❌ No | ✅ Create |
+| PUT /api/categories/{id} | ❌ No | ❌ No | ✅ Update |
+| DELETE /api/categories/{id} | ❌ No | ❌ No | ✅ Delete |
+| **Orders** |
+| POST /api/orders | ✅ Create | ✅ Create | ✅ Create |
+| GET /api/orders | ✅ Own | ✅ Own | ✅ All |
+| GET /api/orders/all | ❌ No | ❌ No | ✅ View |
+| PUT /api/orders/{id}/status | ❌ No | ✅ Own | ✅ All |
+| **Payments** |
+| POST /api/payments | ✅ Own | ✅ Own | ✅ All |
+| GET /api/payments/{id} | ✅ Own | ✅ Own | ✅ All |
+
+---
+
+## 🚀 Complete End-to-End Example
+
+### Scenario: User Registration → Browse → Purchase
+
+```bash
+# 1. Register new user in User Service
+curl -X POST http://localhost:8444/auth/signUp \
+  -H "Content-Type: application/json" \
+  -d '{
+    "username": "shopuser",
+    "email": "shop@example.com",
+    "password": "Shop@2024",
+    "firstName": "Shop",
+    "lastName": "User"
+  }' | python3 -m json.tool > /tmp/user_token.json
+
+# 2. Extract token
+TOKEN=$(cat /tmp/user_token.json | grep '"token"' | cut -d'"' -f4)
+echo "Token: $TOKEN"
+
+# 3. Browse products
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/api/products | python3 -m json.tool
+
+# 4. View product details
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/api/products/1 | python3 -m json.tool
+
+# 5. Create order
+curl -X POST http://localhost:8080/api/orders \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "items": [{"productId": 1, "quantity": 1}],
+    "shippingAddress": {
+      "street": "123 Main St",
+      "city": "NYC",
+      "state": "NY",
+      "zipCode": "10001",
+      "country": "USA"
+    }
+  }' | python3 -m json.tool > /tmp/order.json
+
+# 6. Get order ID and create payment
+ORDER_ID=$(cat /tmp/order.json | grep '"orderId"' | cut -d':' -f2 | tr -d ' ,')
+curl -X POST http://localhost:8080/api/payments \
+  -H "Authorization: Bearer $TOKEN" \
+  -H "Content-Type: application/json" \
+  -d "{
+    \"orderId\": $ORDER_ID,
+    \"amount\": 99.99,
+    \"currency\": \"USD\"
+  }" | python3 -m json.tool
+```
+
+---
 
 ---
 
